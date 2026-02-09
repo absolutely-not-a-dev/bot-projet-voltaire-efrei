@@ -73,19 +73,10 @@ while True:
         except NoSuchElementException: pass
         try: driver.find_element(By.XPATH, "//div[contains(@class, 'css-g5y9jx r-1phboty r-1q8sk3r r-1qfr5kh r-1yadl64')]/button").click()
         except NoSuchElementException: pass   
-
-        full_text = driver_wait((By.XPATH, "//*")).split("\n")
-        for text in full_text:
-            if "CONTINUER" in text or "Question cruciale" in text:
-                LISTE_ELEMENTS = driver.find_elements(By.XPATH, f"//button//div//*[text()='Continuer']")
-                FIRST = LISTE_ELEMENTS[0]
-                continue
-            if "SUIVANT" in text or "Règle acquise" in text:
-                driver.find_elements(By.XPATH, f"//button//div//*[text()='SUIVANT']")[0].click()
-                continue
         
-        
-        all_text = driver.find_element(By.XPATH, MAIN_BOX_XPATH).text.split("\n")
+        ### Retrieve all text from web page
+        try: all_text = driver.find_element(By.XPATH, MAIN_BOX_XPATH).text.split("\n")
+        except NoSuchElementException: continue
         for text in all_text: # remove useless content
             for to_del in ("JE NE PEUX PAS ÉCOUTER", "RÉVÉLER UN INDICE", "Utiliser un indice n'affecte pas", "☰", "0 / "):
                 if to_del in text:
@@ -94,19 +85,16 @@ while True:
         theme = all_text[0] 
         instruction = all_text[1].replace("Cliquer sur", "Trouver")
 
-
+        ### Detect which question type it is and crafting ai question in prevision
         if "Vocabulaire" in theme: # expression tab
             prompt = f"{instruction}. Il n'y a qu'une seule réponse possible. Le mot est {all_text[2]}. La réponse se trouve dans les propositions suivantes: '{" ".join(all_text[3::])}'"
-
 
         elif "Cliquez sur la faute" in theme: # courriel tab
             prompt = f"Tu dois trouver la faute dans la phrase. Il n'y a qu'une seule réponse possible. Si tu ne repère pas de faute, écrit 'Il n’y a pas de faute'. Voici la phrase: '{" ".join(all_text)}'"
 
-
         elif "Cliquez sur le mot" in theme : 
             div_text = driver.find_elements(By.XPATH, MAIN_BOX_XPATH + "//div[contains(@class, 'css-g5y9jx r-18u37iz r-1w6e6rj r-1h0z5md r-1peese0 r-1wzrnnt r-3pj75a r-13qz1uu')]")
             prompt = f"{instruction}. Il n'y a qu'une seule réponse possible. La réponse se trouve dans les propositions suivantes :'{"".join([text.text for text in div_text])}'"
-
 
         elif "Cliquer / Déposer" in theme : # orthographe tab
             box1, box2 = driver.find_elements(By.XPATH, MAIN_BOX_XPATH + "//div[contains(@class, 'css-g5y9jx r-13awgt0 r-vacyoi')]")
@@ -114,27 +102,31 @@ while True:
             categorie1, categorie2 = driver.find_elements(By.XPATH, MAIN_BOX_XPATH + "//div[contains(@class, 'css-g5y9jx r-13awgt0 r-1fdo3w0')]")
             prompt = f"{instruction}. Tu dois indiquer seulement les mots respéctant cette règle : '{categorie2.text}'. Voici la liste des éléments: '{choices}'"
 
-
         elif theme == "RÈGLE" : # help tab (useless so directly click on CONTINUER)
             driver_wait((By.XPATH, f"//*[contains(text(), 'Continuer')]"), True)
             continue
 
+        ### Give the question to ai 
         if not ai_already_anwsered:
+            print("Ai is thinking ...")
             ai_anwser = ask_ai(prompt).replace("\\n", "\n").replace("\n", " ").replace("-", "‑").strip()
         ai_already_anwsered = False  
       
-        driver.implicitly_wait(ATTENTE_ENTRE_QUESTIONS)
+        time.sleep(ATTENTE_ENTRE_QUESTIONS)
 
+        ### Do different things depending on anwser type
         if "Cliquer / Déposer" in theme:
             for choice in choices:
                 right_box = box2 if choice in ai_anwser else box1
                 driver.find_elements(By.XPATH, MAIN_BOX_XPATH + f"//*[contains(text(), \"{choice}\")]")[0].click()
                 ActionChains(driver).move_to_element_with_offset(right_box, 0, 100).click().perform()
+                print("Bot organized anwser in categories.")
             driver.find_element(By.XPATH, f"//div[contains(@class, 'r-q4m81j r-tsynxw r-180ddmb r-lrvibr') and contains(text(), 'Valider')]").click()
         
         else :
             try : 
                 driver.find_elements(By.XPATH, MAIN_BOX_XPATH + f"//*[contains(text(), \"{ai_anwser}\")]")[0].click()
+                print("Bot clicked on anwser")
                 driver_wait((By.XPATH, f"//div[contains(text(), 'SUIVANT')]"), click=True)
             except (ElementClickInterceptedException, IndexError) as e:
                 print("Error as occured : \n", e)

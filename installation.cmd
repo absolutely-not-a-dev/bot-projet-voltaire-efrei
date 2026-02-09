@@ -18,7 +18,7 @@ echo    - installer la librairie python SELENIUM et KEYBOARD
 echo --------------------------------------------------------------------------
 echo Si vous acceptez toute ces conditions,
 echo                     APPUYEZ SUR ENTREE
-timeout 3 >nul 2>nul 
+
 pause >nul 2>nul 
 
 ollama -v >nul 2>nul 
@@ -40,7 +40,7 @@ if %errorlevel% neq 0 (
 )
 
 cls 
-echo Téléchargement de l'ia (pas le test)
+echo Telechargement de l'ia (pas le test)
 ollama pull jobautomation/OpenEuroLLM-French:latest 
 if %errorlevel% neq 0 (
     echo Une erreur est apparu lors de l'installation de l'ia.
@@ -60,7 +60,7 @@ ollama run Voltaire-bot "Indique le mot ou le groupe de mots dont le sens est le
 echo FIN DU TEST AI a %time%
 echo Si vous voyez que l'ia a mis plus de 2 minutes a repondre lors du test, 
 echo cela signifie que votre pc n'est pas assez puissant. 
-timeout 5
+timeout 5 >nul 2>nul
 
 pip install selenium keyboard -q 
 color 02
@@ -80,11 +80,12 @@ echo adresse mail ici > identifiants.txt
 echo mot de passe ici >> identifiants.txt 
 echo 0 >> identifiants.txt 
 echo @echo off > Voltaire-Bot.cmd
-echo cd "%cd%" && py main.py && cls >> Voltaire-Bot.cmd
+echo cd "%cd%" >> Voltaire-Bot.cmd
+echo py main.py >> Voltaire-Bot.cmd 
+echo cls >> Voltaire-Bot.cmd
 
 pause >nul 2>nul
-start "https://github.com/absolutely-not-a-dev/bot-projet-voltaire-efrei/blob/main/README.md"
-
+start https://github.com/absolutely-not-a-dev/bot-projet-voltaire-efrei/blob/main/README.md
 
 
 endlocal

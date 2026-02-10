@@ -72,8 +72,8 @@ echo Si vous voulez eviter d'entrer a chaque fois vos identifiants
 echo projet voltaire, remplissez le fichier identifiants.txt
 echo 1ere ligne = email 
 echo 2nd ligne = mot de passe 
-echo 3eme ligne = temps d'attente ajoutee entre chaque question (pour éviter d'être trop suspect)
-echo 4ème ligne = raccourci clavier pour fermeture d'urgence lors de l'execution
+echo 3eme ligne = temps d'attente ajoutee entre chaque question
+echo 4eme ligne = raccourci clavier pour fermeture d'urgence lors de l'execution
 echo     APPUYEZ SUR ENTREE POUR OUVRIR LE README GITHUB
 
 echo adresse mail ici > identifiants.txt 

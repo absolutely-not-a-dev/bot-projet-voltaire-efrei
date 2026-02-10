@@ -79,6 +79,7 @@ echo     APPUYEZ SUR ENTREE POUR OUVRIR LE README GITHUB
 echo adresse mail ici > identifiants.txt 
 echo mot de passe ici >> identifiants.txt 
 echo 0 >> identifiants.txt 
+echo ctrl+alt+q >> identifiants.txt
 echo @echo off > Voltaire-Bot.cmd
 echo cd "%cd%" >> Voltaire-Bot.cmd
 echo py main.py >> Voltaire-Bot.cmd 

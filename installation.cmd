@@ -62,7 +62,7 @@ echo Si vous voyez que l'ia a mis plus de 2 minutes a repondre lors du test,
 echo cela signifie que votre pc n'est pas assez puissant. 
 timeout 5 >nul 2>nul
 
-pip install selenium keyboard -q 
+pip install selenium -q 
 color 02
 
 
@@ -79,7 +79,6 @@ echo     APPUYEZ SUR ENTREE POUR OUVRIR LE README GITHUB
 echo adresse mail ici > identifiants.txt 
 echo mot de passe ici >> identifiants.txt 
 echo 0 >> identifiants.txt 
-echo ctrl+alt+q >> identifiants.txt
 echo @echo off > Voltaire-Bot.cmd
 echo cd "%cd%" >> Voltaire-Bot.cmd
 echo py main.py >> Voltaire-Bot.cmd 

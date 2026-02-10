@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import time, os, subprocess, sys, keyboard
+import time, os, subprocess
 
 # Fonctions
 def ask_ai(prompt: str) -> str:
@@ -31,14 +31,12 @@ MAIN_BOX_XPATH = "//div[contains(@class, 'r-hwh8t1 r-1wzrnnt r-nsbfu8')]"
 # Check if user put his credential in identifiants.txt 
 if os.path.isfile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "identifiants.txt")):
     with open("identifiants.txt", "r") as f:
-        USERNAME, PASSWORD, ATTENTE_ENTRE_QUESTIONS, SHORTCUT = f.readline().strip(), f.readline().strip(), int(f.readline().strip()), f.readline().strip()
+        USERNAME, PASSWORD, ATTENTE_ENTRE_QUESTIONS = f.readline().strip(), f.readline().strip(), int(f.readline().strip())
         credential_status = True
 else:
-    USERNAME, PASSWORD, ATTENTE_ENTRE_QUESTIONS, SHORTCUT = "Stv, tu peux inscrire tes identifiants dans identifiants.txt", "", 0, "ctrl+alt+q"
+    USERNAME, PASSWORD, ATTENTE_ENTRE_QUESTIONS = "", "", 0
     credential_status = False
 
-# Start keyboard detection
-keyboard.add_hotkey(SHORTCUT, shortcut_detection)
 
 # Init Chrome driver + fullscreen + no cookies + mute
 options = Options()
